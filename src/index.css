@@ -1,0 +1,10 @@
+body {
+	width: 100vw;
+	min-height: 100vh !important;
+	overflow-x: hidden;
+}
+
+#root {
+	width: 100vw;
+	min-height: 100vh !important;
+}
