@@ -9,6 +9,7 @@ import {
 	TabPanel,
 	Text,
 	Spinner,
+	Box,
 } from "@chakra-ui/react";
 
 import ChartDisplay from "./components/ChartDisplay";
@@ -27,15 +28,14 @@ const App: React.FC = () => {
 	const [selectedPlatform, setSelectedPlatform] = useState<string>("All");
 	const [selectedCountry, setSelectedCountry] = useState<string>("All");
 	const [selectedAdNetwork, setSelectedAdNetwork] = useState<string>("All");
-
 	const [selectedDates, setSelectedDates] = useState<Date[]>([
 		new Date(),
 		new Date(),
 	]);
-
 	const [targetValue, setTargetValue] = useState<number>(0);
 	const [targetColor, setTargetColor] = useState<string>("#ff0000"); // Default red
 
+	// Fetch the data and parse CSV
 	useEffect(() => {
 		Papa.parse(CSV, {
 			download: true,
@@ -48,6 +48,7 @@ const App: React.FC = () => {
 		});
 	}, []);
 
+	// Get unique values for each filter
 	const { uniqueApps, uniquePlatforms, uniqueCountries, uniqueAdNetworks } =
 		useMemo(() => {
 			const uniqueApps = Array.from(new Set(allData.map(entry => entry.App)));
@@ -69,7 +70,7 @@ const App: React.FC = () => {
 			};
 		}, [allData]);
 
-	// More filters can be added here like country, platform, etc.
+	// Filter the data based on the selected filters
 	const filteredData = useMemo(() => {
 		const [startDate, endDate] = selectedDates;
 
@@ -132,7 +133,7 @@ const App: React.FC = () => {
 				Game Analytics Dashboard
 			</Text>
 
-			<div>
+			<Box>
 				<AppSelector
 					value={selectedApp}
 					onChange={setSelectedApp}
@@ -168,7 +169,7 @@ const App: React.FC = () => {
 					onValueChange={setTargetValue}
 					onColorChange={setTargetColor}
 				/>
-			</div>
+			</Box>
 
 			<Tabs variant="enclosed">
 				<TabList>
