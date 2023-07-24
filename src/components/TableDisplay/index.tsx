@@ -1,56 +1,41 @@
-import {
-	Table,
-	Thead,
-	Tbody,
-	Tfoot,
-	Tr,
-	Th,
-	Td,
-	TableCaption,
-	Box,
-} from "@chakra-ui/react";
+import { Box } from "@chakra-ui/react";
+import { Table, createColumn } from "react-chakra-pagination";
 
 import { TableDisplayProps } from "../../types";
-import { uniqueId } from "lodash";
 
 const TableDisplay: React.FC<TableDisplayProps> = ({ data }) => {
+	const columnHelper = createColumn<(typeof data)[0]>();
+
+	const columns = [
+		columnHelper.accessor("Date", {
+			cell: info => info.getValue(),
+			header: "Date",
+		}),
+		columnHelper.accessor("Country", {
+			cell: info => info.getValue(),
+			header: "Country",
+		}),
+		columnHelper.accessor("App", {
+			cell: info => info.getValue(),
+			header: "App",
+		}),
+		columnHelper.accessor("Platform", {
+			cell: info => info.getValue(),
+			header: "Platform",
+		}),
+		columnHelper.accessor("Ad Network", {
+			cell: info => info.getValue(),
+			header: "Ad Network",
+		}),
+		columnHelper.accessor("Daily Users", {
+			cell: info => info.getValue(),
+			header: "Daily Users",
+		}),
+	];
+
 	return (
 		<Box overflowX="scroll">
-			<Table variant="simple">
-				<TableCaption>Table of data for {data.length} days</TableCaption>
-				<Thead>
-					<Tr>
-						<Th>Date</Th>
-						<Th>Country</Th>
-						<Th>App</Th>
-						<Th>Platform</Th>
-						<Th>Ad Network</Th>
-						<Th isNumeric>Daily Users</Th>
-					</Tr>
-				</Thead>
-				<Tbody>
-					{data.map(row => (
-						<Tr key={uniqueId()}>
-							<Td>{row.Date}</Td>
-							<Td>{row.Country}</Td>
-							<Td>{row.App}</Td>
-							<Td>{row.Platform}</Td>
-							<Td>{row["Ad Network"]}</Td>
-							<Td isNumeric>{row["Daily Users"]}</Td>
-						</Tr>
-					))}
-				</Tbody>
-				<Tfoot>
-					<Tr>
-						<Th>Date</Th>
-						<Th>Country</Th>
-						<Th>App</Th>
-						<Th>Platform</Th>
-						<Th>Ad Network</Th>
-						<Th isNumeric>Daily Users</Th>
-					</Tr>
-				</Tfoot>
-			</Table>
+			<Table colorScheme="blue" columns={columns} data={data} />
 		</Box>
 	);
 };
