@@ -23,7 +23,10 @@ import AppSelector from "./components/AppSelector";
 const App: React.FC = () => {
 	// State
 	const [allData, setAllData] = useState<DataEntry[]>([]); // The entire dataset
-	const [selectedApp, setSelectedApp] = useState<string>("Carz");
+	const [selectedApp, setSelectedApp] = useState<string>("All");
+	const [selectedPlatform, setSelectedPlatform] = useState<string>("All");
+	const [selectedCountry, setSelectedCountry] = useState<string>("All");
+	const [selectedAdNetwork, setSelectedAdNetwork] = useState<string>("All");
 
 	const [selectedDates, setSelectedDates] = useState<Date[]>([
 		new Date(),
@@ -45,12 +48,27 @@ const App: React.FC = () => {
 		});
 	}, []);
 
-	const uniqueApps = useMemo(
-		() => Array.from(new Set(allData.map(entry => entry.App))),
-		[allData]
-	);
+	const { uniqueApps, uniquePlatforms, uniqueCountries, uniqueAdNetworks } =
+		useMemo(() => {
+			const uniqueApps = Array.from(new Set(allData.map(entry => entry.App)));
+			const uniquePlatforms = Array.from(
+				new Set(allData.map(entry => entry.Platform))
+			);
+			const uniqueCountries = Array.from(
+				new Set(allData.map(entry => entry.Country))
+			);
+			const uniqueAdNetworks = Array.from(
+				new Set(allData.map(entry => entry["Ad Network"]))
+			);
 
-	// Filter data whenever selectedApp, startDate, or endDate changes
+			return {
+				uniqueApps,
+				uniquePlatforms,
+				uniqueCountries,
+				uniqueAdNetworks,
+			};
+		}, [allData]);
+
 	// More filters can be added here like country, platform, etc.
 	const filteredData = useMemo(() => {
 		const [startDate, endDate] = selectedDates;
@@ -61,11 +79,24 @@ const App: React.FC = () => {
 			const end = new Date(endDate);
 
 			return (
-				entryDate >= start && entryDate <= end && entry.App === selectedApp
+				entryDate >= start &&
+				entryDate <= end &&
+				(selectedApp === "All" || entry.App === selectedApp) &&
+				(selectedPlatform === "All" || entry.Platform === selectedPlatform) &&
+				(selectedCountry === "All" || entry.Country === selectedCountry) &&
+				(selectedAdNetwork === "All" ||
+					entry["Ad Network"] === selectedAdNetwork)
 			);
 		});
 		return filtered;
-	}, [allData, selectedApp, selectedDates]);
+	}, [
+		allData,
+		selectedAdNetwork,
+		selectedApp,
+		selectedCountry,
+		selectedDates,
+		selectedPlatform,
+	]);
 
 	if (allData.length === 0) {
 		return (
@@ -96,7 +127,7 @@ const App: React.FC = () => {
 	}
 
 	return (
-		<Container maxW="container.sm" mx={"auto"} w="100vw" py={"20px"}>
+		<Container maxW="4xl" mx={"auto"} w="100vw" py={"20px"}>
 			<Text fontSize="xl" as="b">
 				Game Analytics Dashboard
 			</Text>
@@ -106,6 +137,25 @@ const App: React.FC = () => {
 					value={selectedApp}
 					onChange={setSelectedApp}
 					options={uniqueApps}
+					label="Game/App"
+				/>
+				<AppSelector
+					value={selectedPlatform}
+					onChange={setSelectedPlatform}
+					options={uniquePlatforms}
+					label=" Platform"
+				/>
+				<AppSelector
+					value={selectedCountry}
+					onChange={setSelectedCountry}
+					options={uniqueCountries}
+					label=" Country"
+				/>
+				<AppSelector
+					value={selectedAdNetwork}
+					onChange={setSelectedAdNetwork}
+					options={uniqueAdNetworks}
+					label=" Ad Network"
 				/>
 
 				<DateRangePicker

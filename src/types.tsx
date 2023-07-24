@@ -35,4 +35,5 @@ export type AppSelectorProps = {
 	options: string[];
 	value: string;
 	onChange: (value: string) => void;
+	label: string;
 };
